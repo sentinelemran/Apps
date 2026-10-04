@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shadow App Store</title>
+<style>
+:root{--bg:#f4f5f8;--card:#fff;--text:#14151a;--muted:#6b7080;--accent:#6c4cff;--line:#e4e6ee;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0d12;--card:#171922;--text:#f1f2f6;--muted:#9296a8;--accent:#8b72ff;--line:#262936}}
+:root[data-theme="dark"]{--bg:#0c0d12;--card:#171922;--text:#f1f2f6;--muted:#9296a8;--accent:#8b72ff;--line:#262936}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Bengali","Segoe UI",sans-serif;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding:28px 18px 48px}
+.brand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:22px}
+.profile{text-align:center;margin-bottom:30px}
+.avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);background:var(--card);display:inline-flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:var(--accent)}
+h1{margin:14px 0 4px;font-size:26px}
+.bio{margin:0;color:var(--muted);font-size:15px}
+h2{font-size:15px;color:var(--muted);margin:0 0 12px;font-weight:600}
+.list{display:flex;flex-direction:column;gap:12px}
+.app{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.icon{width:60px;height:60px;border-radius:14px;object-fit:cover;flex:none;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--accent)}
+.info{flex:1;min-width:0}
+.name{font-weight:700;font-size:16px;margin:0}
+.desc{margin:2px 0 0;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.get{flex:none;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;border:1px dashed var(--line);border-radius:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Shadow App Store</div>
+  <div class="profile" id="profile"></div>
+  <h2>অ্যাপসমূহ</h2>
+  <div class="list" id="apps"></div>
+</div>
+<script>
+/* ===== এখানে নিজের তথ্য বসান ===== */
+const PROFILE = {
+  name: "Mr Shadow",
+  bio: "Personal Use Only Dont Hart Anyone⚠️",
+  photo: "logo/shadow.png"
+};
+const APPS = [
+  { name: "ABCD PENEL", icon: "logo/abcd.png", file: "abcd.apk" },
+  { name: "Aincrad Penel", icon: "logo/aincrad.png", file: "aincrad.apk" },
+  { name: "Angry Mod", icon: "logo/angry.png", file: "angry.apk" },
+  { name: "Bala Mod", icon: "logo/bala.png", file: "bala.apk" },
+  { name: "W8 Baler Wifi", icon: "logo/balerwifi.png", file: "balerwifi.apk" },
+  { name: "Drip Cliant", icon: "logo/drip.png", file: "drip.apk" },
+  { name: "Google", icon: "logo/google.png", file: "google.apk" },
+  { name: "V4Z Teem", icon: "logo/v4zteem.png", file: "v4zteem.apk" },
+  { name: "W8 Yt Premium V2", icon: "logo/ytv2.png", file: "ytv2.apk" },
+  { name: "W8 Yt Premium V3", icon: "logo/ytv3.png", file: "ytv3.apk" }
+];
+/* ================================== */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const first=s=>esc([...String(s)][0]||"?");
+document.getElementById("profile").innerHTML=
+  (PROFILE.photo?`<img class="avatar" src="${esc(PROFILE.photo)}" alt="">`:`<div class="avatar">${first(PROFILE.name)}</div>`)+
+  `<h1>${esc(PROFILE.name)}</h1>${PROFILE.bio?`<p class="bio">${esc(PROFILE.bio)}</p>`:""}`;
+document.getElementById("apps").innerHTML=APPS.length?APPS.map(a=>
+  `<div class="app">${a.icon?`<img class="icon" src="${esc(a.icon)}" alt="">`:`<div class="icon">${first(a.name)}</div>`}
+  <div class="info"><p class="name">${esc(a.name)}</p>${a.desc?`<p class="desc">${esc(a.desc)}</p>`:""}</div>
+  <a class="get" href="${esc(a.file||a.link||"#")}" download>Get</a></div>`).join("")
+  :`<div class="empty">এখনো কোনো অ্যাপ নেই</div>`;
+</script>
+</body>
+</html>
