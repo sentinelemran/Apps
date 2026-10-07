@@ -14,11 +14,13 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Bengali","Segoe UI",sans-serif;line-height:1.5}
 .wrap{max-width:640px;margin:0 auto;padding:28px 18px 48px}
 .brand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:22px}
-.profile{text-align:center;margin-bottom:30px}
+.profile{text-align:center;margin-bottom:22px}
 .avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);background:var(--card);display:inline-flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:var(--accent)}
 h1{margin:14px 0 4px;font-size:26px}
 .bio{margin:0;color:var(--muted);font-size:15px}
-h2{font-size:15px;color:var(--muted);margin:0 0 12px;font-weight:600}
+.search{width:100%;margin:4px 0 22px;padding:12px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;outline:none}
+.search:focus{border-color:var(--accent)}
+h2{font-size:15px;color:var(--muted);margin:0 0 12px;font-weight:600;display:flex;justify-content:space-between}
 .list{display:flex;flex-direction:column;gap:12px}
 .app{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
 .icon{width:60px;height:60px;border-radius:14px;object-fit:cover;flex:none;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--accent)}
@@ -33,7 +35,8 @@ h2{font-size:15px;color:var(--muted);margin:0 0 12px;font-weight:600}
 <div class="wrap">
   <div class="brand">Shadow App Store</div>
   <div class="profile" id="profile"></div>
-  <h2>অ্যাপসমূহ</h2>
+  <input class="search" id="search" type="text" placeholder="অ্যাপ খুঁজুন...">
+  <h2><span>অ্যাপসমূহ</span><span id="count"></span></h2>
   <div class="list" id="apps"></div>
 </div>
 <script>
@@ -53,20 +56,31 @@ const APPS = [
   { name: "Google", icon: "logo/google.png", file: "google.apk" },
   { name: "V4Z Teem", icon: "logo/v4zteem.png", file: "v4zteem.apk" },
   { name: "W8 Yt Premium V2", icon: "logo/ytv2.png", file: "ytv2.apk" },
-  { name: "X-REG NON ROOT", icon: "logo/xreg.png", file: "xreg.apk" },
-  { name: "W8 Yt Premium V3", icon: "logo/ytv3.png", file: "ytv3.apk" }
+  { name: "W8 Yt Premium V3", icon: "logo/ytv3.png", file: "ytv3.apk" },
+  { name: "X-REG NON ROOT", icon: "logo/xreg.png", file: "xreg.apk" }
 ];
 /* ================================== */
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const first=s=>esc([...String(s)][0]||"?");
+
 document.getElementById("profile").innerHTML=
   (PROFILE.photo?`<img class="avatar" src="${esc(PROFILE.photo)}" alt="">`:`<div class="avatar">${first(PROFILE.name)}</div>`)+
   `<h1>${esc(PROFILE.name)}</h1>${PROFILE.bio?`<p class="bio">${esc(PROFILE.bio)}</p>`:""}`;
-document.getElementById("apps").innerHTML=APPS.length?APPS.map(a=>
-  `<div class="app">${a.icon?`<img class="icon" src="${esc(a.icon)}" alt="">`:`<div class="icon">${first(a.name)}</div>`}
-  <div class="info"><p class="name">${esc(a.name)}</p>${a.desc?`<p class="desc">${esc(a.desc)}</p>`:""}</div>
-  <a class="get" href="${esc(a.file||a.link||"#")}" download>Get</a></div>`).join("")
-  :`<div class="empty">এখনো কোনো অ্যাপ নেই</div>`;
+
+function render(list){
+  document.getElementById("count").textContent = list.length ? list.length+"টি" : "";
+  document.getElementById("apps").innerHTML = list.length ? list.map(a=>
+    `<div class="app">${a.icon?`<img class="icon" src="${esc(a.icon)}" alt="" onerror="this.outerHTML='<div class=icon>${first(a.name)}</div>'">`:`<div class="icon">${first(a.name)}</div>`}
+    <div class="info"><p class="name">${esc(a.name)}</p>${a.desc?`<p class="desc">${esc(a.desc)}</p>`:""}</div>
+    <a class="get" href="${esc(a.file||a.link||"#")}" download>Get</a></div>`).join("")
+    : `<div class="empty">কোনো অ্যাপ পাওয়া যায়নি</div>`;
+}
+render(APPS);
+
+document.getElementById("search").addEventListener("input", e=>{
+  const q = e.target.value.trim().toLowerCase();
+  render(q ? APPS.filter(a=>a.name.toLowerCase().includes(q)) : APPS);
+});
 </script>
 </body>
 </html>
